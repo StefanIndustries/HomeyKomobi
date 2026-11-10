@@ -1,0 +1,46 @@
+{
+  "title": {
+    "en": "Parked",
+    "nl": "Geparkeerd"
+  },
+  "hint": {
+    "en": "The tracker reports the vehicle is parked",
+    "nl": "De tracker meldt dat het voertuig geparkeerd is"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "latitude",
+      "title": {
+        "en": "Latitude",
+        "nl": "Breedtegraad"
+      },
+      "example": 52.37
+    },
+    {
+      "type": "number",
+      "name": "longitude",
+      "title": {
+        "en": "Longitude",
+        "nl": "Lengtegraad"
+      },
+      "example": 4.89
+    },
+    {
+      "type": "number",
+      "name": "odometer",
+      "title": {
+        "en": "Odometer (km)",
+        "nl": "Kilometerstand (km)"
+      },
+      "example": 12345
+    }
+  ]
+}

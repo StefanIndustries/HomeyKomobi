@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": { "en": "Odometer", "nl": "Kilometerstand" },
+  "units": { "en": "km" },
+  "decimals": 0,
+  "min": 0,
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_odometer.svg"
+}

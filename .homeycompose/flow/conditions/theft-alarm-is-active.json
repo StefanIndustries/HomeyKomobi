@@ -1,0 +1,13 @@
+{
+  "title": {
+    "en": "Theft alarm !{{is|isn't}} going off",
+    "nl": "Diefstalalarm !{{gaat|gaat niet}} af"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ]
+}

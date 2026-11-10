@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "Location changed",
+    "nl": "Locatie is veranderd"
+  },
+  "hint": {
+    "en": "The vehicle moved more than 50 meters since the last update",
+    "nl": "Het voertuig is meer dan 50 meter verplaatst sinds de vorige update"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "latitude",
+      "title": {
+        "en": "Latitude",
+        "nl": "Breedtegraad"
+      },
+      "example": 52.37
+    },
+    {
+      "type": "number",
+      "name": "longitude",
+      "title": {
+        "en": "Longitude",
+        "nl": "Lengtegraad"
+      },
+      "example": 4.89
+    },
+    {
+      "type": "number",
+      "name": "speed",
+      "title": {
+        "en": "Speed (km/h)",
+        "nl": "Snelheid (km/u)"
+      },
+      "example": 50
+    },
+    {
+      "type": "number",
+      "name": "distance_from_home",
+      "title": {
+        "en": "Distance from home (km)",
+        "nl": "Afstand tot thuis (km)"
+      },
+      "example": 2.4
+    }
+  ]
+}

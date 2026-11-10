@@ -1,0 +1,13 @@
+{
+  "title": {
+    "en": "!{{Is|Isn't}} riding",
+    "nl": "!{{Rijdt|Rijdt niet}}"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ]
+}

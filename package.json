@@ -1,0 +1,22 @@
+{
+  "name": "com.komobimoto",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test test/*.test.cjs",
+    "hinstall": "homey app install",
+    "run": "homey app run --remote",
+    "validate": "homey app validate --level publish",
+    "publish": "homey app publish"
+  },
+  "dependencies": {
+    "node-komobi": "^0.3.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^16.1.9",
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^1.8.3",
+    "@types/node": "^26.6.6",
+    "typescript": "^5.9.3"
+  }
+}

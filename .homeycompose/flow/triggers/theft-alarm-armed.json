@@ -1,0 +1,13 @@
+{
+  "title": {
+    "en": "Theft alarm was armed",
+    "nl": "Diefstalalarm werd ingeschakeld"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ]
+}

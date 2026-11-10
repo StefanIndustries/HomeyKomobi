@@ -1,0 +1,11 @@
+{
+  "type": "boolean",
+  "title": { "en": "Theft alarm armed", "nl": "Diefstalalarm ingeschakeld" },
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": { "en": "Theft alarm armed", "nl": "Diefstalalarm ingeschakeld" },
+  "insightsTitleFalse": { "en": "Theft alarm disarmed", "nl": "Diefstalalarm uitgeschakeld" },
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_theft_alarm_armed.svg"
+}

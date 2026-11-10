@@ -1,0 +1,47 @@
+{
+  "title": {
+    "en": "Vehicle battery dropped below a voltage",
+    "nl": "Accuspanning zakte onder een waarde"
+  },
+  "titleFormatted": {
+    "en": "Vehicle battery dropped below [[voltage]] V",
+    "nl": "Accuspanning zakte onder [[voltage]] V"
+  },
+  "hint": {
+    "en": "A healthy 12 V battery sits around 12.6 V when the engine is off",
+    "nl": "Een gezonde 12 V accu zit rond 12,6 V als de motor uit staat"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    },
+    {
+      "type": "number",
+      "name": "voltage",
+      "min": 0,
+      "max": 60,
+      "step": 0.1,
+      "placeholder": {
+        "en": "Voltage",
+        "nl": "Spanning"
+      },
+      "title": {
+        "en": "Voltage",
+        "nl": "Spanning"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "voltage",
+      "title": {
+        "en": "Battery voltage (V)",
+        "nl": "Accuspanning (V)"
+      },
+      "example": 11.8
+    }
+  ]
+}

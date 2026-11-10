@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Refresh status",
+    "nl": "Status verversen"
+  },
+  "hint": {
+    "en": "Fetch the latest status from Komobi right away",
+    "nl": "Haal direct de laatste status op bij Komobi"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ]
+}

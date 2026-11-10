@@ -1,0 +1,73 @@
+{
+  "title": {
+    "en": "A ride was recorded",
+    "nl": "Een rit is opgeslagen"
+  },
+  "hint": {
+    "en": "Komobi saved a new ride in the ride history",
+    "nl": "Komobi heeft een nieuwe rit in de rittengeschiedenis opgeslagen"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "distance",
+      "title": {
+        "en": "Distance (km)",
+        "nl": "Afstand (km)"
+      },
+      "example": 42.5
+    },
+    {
+      "type": "number",
+      "name": "duration",
+      "title": {
+        "en": "Duration (minutes)",
+        "nl": "Duur (minuten)"
+      },
+      "example": 55
+    },
+    {
+      "type": "number",
+      "name": "average_speed",
+      "title": {
+        "en": "Average speed (km/h)",
+        "nl": "Gemiddelde snelheid (km/u)"
+      },
+      "example": 46
+    },
+    {
+      "type": "number",
+      "name": "max_speed",
+      "title": {
+        "en": "Max speed (km/h)",
+        "nl": "Topsnelheid (km/u)"
+      },
+      "example": 112
+    },
+    {
+      "type": "number",
+      "name": "driving_score",
+      "title": {
+        "en": "Driving score (0-10)",
+        "nl": "Rijscore (0-10)"
+      },
+      "example": 8.4
+    },
+    {
+      "type": "string",
+      "name": "name",
+      "title": {
+        "en": "Ride name",
+        "nl": "Ritnaam"
+      },
+      "example": "Amsterdam - Utrecht"
+    }
+  ]
+}

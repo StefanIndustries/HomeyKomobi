@@ -1,0 +1,11 @@
+{
+  "type": "boolean",
+  "title": { "en": "Theft alarm", "nl": "Diefstalalarm" },
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": { "en": "Theft alarm went off", "nl": "Diefstalalarm ging af" },
+  "insightsTitleFalse": { "en": "Theft alarm stopped", "nl": "Diefstalalarm gestopt" },
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_alarm_theft.svg"
+}

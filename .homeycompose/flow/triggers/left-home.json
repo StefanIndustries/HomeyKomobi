@@ -1,0 +1,56 @@
+{
+  "title": {
+    "en": "Left home",
+    "nl": "Van huis vertrokken"
+  },
+  "titleFormatted": {
+    "en": "Went further than [[radius]] meters from home",
+    "nl": "Verder dan [[radius]] meter van huis gegaan"
+  },
+  "hint": {
+    "en": "Home is the location set for your Homey",
+    "nl": "Thuis is de locatie die voor je Homey is ingesteld"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    },
+    {
+      "type": "number",
+      "name": "radius",
+      "min": 25,
+      "max": 100000,
+      "step": 25,
+      "placeholder": {
+        "en": "Radius in meters",
+        "nl": "Straal in meters"
+      },
+      "title": {
+        "en": "Radius (m)",
+        "nl": "Straal (m)"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "latitude",
+      "title": {
+        "en": "Latitude",
+        "nl": "Breedtegraad"
+      },
+      "example": 52.37
+    },
+    {
+      "type": "number",
+      "name": "longitude",
+      "title": {
+        "en": "Longitude",
+        "nl": "Lengtegraad"
+      },
+      "example": 4.89
+    }
+  ]
+}

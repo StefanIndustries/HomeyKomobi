@@ -1,0 +1,36 @@
+{
+  "status": {
+    "parked": "Parked",
+    "riding": "Riding",
+    "alarm": "Theft alarm!",
+    "unknown": "Unknown"
+  },
+  "errors": {
+    "not_logged_in": "Not logged in to Komobi, repair the device to log in",
+    "login_failed": "Logging in to Komobi failed, repair the device with your current password",
+    "invalid_credentials": "Wrong e-mail address or password",
+    "unreachable": "Komobi can't be reached right now, trying again later",
+    "vehicle_not_found": "This vehicle is no longer in your Komobi garage",
+    "no_location": "The location of the vehicle or of your Homey is not known",
+    "vehicle_not_in_account": "This vehicle is not in the garage of that Komobi account"
+  },
+  "widget": {
+    "no_vehicle": "Select a vehicle in the widget settings",
+    "unavailable": "Unavailable",
+    "tracker_battery": "Tracker",
+    "vehicle_battery": "Battery",
+    "odometer": "Odometer",
+    "from_home": "From home",
+    "speed": "Speed",
+    "armed": "Alarm on",
+    "disarmed": "Alarm off",
+    "last_seen": "Last seen"
+  },
+  "settings": {
+    "title": "Komobi Moto settings",
+    "interval": "Update interval (seconds)",
+    "interval_hint": "How often the status of your vehicles is fetched. At least 30 seconds.",
+    "save": "Save",
+    "saved": "Settings saved"
+  }
+}

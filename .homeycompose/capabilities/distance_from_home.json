@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": { "en": "Distance from home", "nl": "Afstand tot thuis" },
+  "units": { "en": "km" },
+  "decimals": 1,
+  "min": 0,
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_home_distance.svg"
+}

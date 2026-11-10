@@ -1,0 +1,46 @@
+{
+  "title": {
+    "en": "Started riding",
+    "nl": "Begon met rijden"
+  },
+  "hint": {
+    "en": "The tracker reports the vehicle is no longer parked",
+    "nl": "De tracker meldt dat het voertuig niet meer geparkeerd staat"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "latitude",
+      "title": {
+        "en": "Latitude",
+        "nl": "Breedtegraad"
+      },
+      "example": 52.37
+    },
+    {
+      "type": "number",
+      "name": "longitude",
+      "title": {
+        "en": "Longitude",
+        "nl": "Lengtegraad"
+      },
+      "example": 4.89
+    },
+    {
+      "type": "number",
+      "name": "odometer",
+      "title": {
+        "en": "Odometer (km)",
+        "nl": "Kilometerstand (km)"
+      },
+      "example": 12345
+    }
+  ]
+}

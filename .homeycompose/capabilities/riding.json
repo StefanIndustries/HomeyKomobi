@@ -1,0 +1,11 @@
+{
+  "type": "boolean",
+  "title": { "en": "Riding", "nl": "Aan het rijden" },
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": { "en": "Started riding", "nl": "Begonnen met rijden" },
+  "insightsTitleFalse": { "en": "Parked", "nl": "Geparkeerd" },
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_riding.svg"
+}

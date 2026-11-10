@@ -1,0 +1,249 @@
+<html>
+<head>
+    <style>
+        .vehicle {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vehicle-icon {
+            flex: none;
+            width: 44px;
+            height: 44px;
+            background-color: var(--homey-text-color, #222);
+            -webkit-mask: url(naked.svg) center / contain no-repeat;
+            mask: url(naked.svg) center / contain no-repeat;
+        }
+
+        .title {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .title p {
+            margin: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .status {
+            flex: none;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: var(--homey-font-size-small, 12px);
+            font-weight: var(--homey-font-weight-bold, 600);
+            color: #fff;
+            background-color: #8a8a8a;
+        }
+
+        .status.parked { background-color: #2e9e5b; }
+        .status.riding { background-color: #1f7ae0; }
+        .status.alarm { background-color: #e0262b; animation: pulse 1s ease-in-out infinite alternate; }
+        .status.offline { background-color: #8a8a8a; }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: .6; }
+        }
+
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 2px;
+            border-radius: 10px;
+            background-color: var(--homey-background-color-light, rgba(127, 127, 127, .1));
+            min-width: 0;
+        }
+
+        .tile .value {
+            font-size: var(--homey-font-size-large, 17px);
+            font-weight: var(--homey-font-weight-bold, 600);
+            white-space: nowrap;
+        }
+
+        .tile .unit {
+            font-size: var(--homey-font-size-small, 12px);
+            font-weight: normal;
+        }
+
+        .tile .label {
+            overflow: hidden;
+            max-width: 100%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .battery-low { color: #e0262b; }
+
+        .empty {
+            display: none;
+            text-align: center;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+
+<body class="homey-widget">
+
+<div class="vehicle" id="vehicle">
+    <div class="header">
+        <div class="vehicle-icon" id="icon"></div>
+        <div class="title">
+            <p class="homey-text-bold" id="name">...</p>
+            <p class="homey-text-small-light" id="description">&nbsp;</p>
+        </div>
+        <span class="status" id="status">...</span>
+    </div>
+
+    <div class="tiles">
+        <div class="tile">
+            <span class="value" id="tracker-battery">-<span class="unit">%</span></span>
+            <span class="label homey-text-small-light" id="label-tracker-battery"></span>
+        </div>
+        <div class="tile">
+            <span class="value" id="vehicle-battery">-<span class="unit">V</span></span>
+            <span class="label homey-text-small-light" id="label-vehicle-battery"></span>
+        </div>
+        <div class="tile">
+            <span class="value" id="odometer">-<span class="unit">km</span></span>
+            <span class="label homey-text-small-light" id="label-odometer"></span>
+        </div>
+        <div class="tile">
+            <span class="value" id="fourth">-<span class="unit">km</span></span>
+            <span class="label homey-text-small-light" id="label-fourth"></span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="homey-text-small" id="armed">&nbsp;</span>
+        <span class="homey-text-small-light" id="last-seen">&nbsp;</span>
+    </div>
+</div>
+
+<p class="empty homey-text-small-light" id="empty"></p>
+
+<script type="text/javascript">
+  const el = id => document.getElementById(id);
+  const vehicleTypes = ['chopper', 'cross', 'touring', 'racing', 'scooter', 'naked', 'trail'];
+
+  function setValue(id, value, unit, decimals) {
+    const text = typeof value === 'number' ? value.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals }) : '-';
+    el(id).innerHTML = '';
+    el(id).append(text);
+    const unitElement = document.createElement('span');
+    unitElement.className = 'unit';
+    unitElement.textContent = unit;
+    el(id).append(unitElement);
+  }
+
+  function timeAgo(iso) {
+    if (!iso) {
+      return '';
+    }
+    const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    const format = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+    if (seconds < 60) return format.format(-Math.round(seconds), 'second');
+    if (seconds < 3600) return format.format(-Math.round(seconds / 60), 'minute');
+    if (seconds < 86400) return format.format(-Math.round(seconds / 3600), 'hour');
+    return format.format(-Math.round(seconds / 86400), 'day');
+  }
+
+  function onHomeyReady(Homey) {
+    el('label-tracker-battery').textContent = Homey.__('widget.tracker_battery');
+    el('label-vehicle-battery').textContent = Homey.__('widget.vehicle_battery');
+    el('label-odometer').textContent = Homey.__('widget.odometer');
+    Homey.ready();
+
+    const deviceIds = typeof Homey.getDeviceIds === 'function' ? Homey.getDeviceIds() : [];
+    const deviceId = deviceIds && deviceIds.length > 0 ? deviceIds[0] : '';
+    let lastSeen;
+
+    function showEmpty(message) {
+      el('vehicle').style.display = 'none';
+      el('empty').style.display = 'block';
+      el('empty').textContent = message;
+    }
+
+    function render(vehicle) {
+      el('vehicle').style.display = 'flex';
+      el('empty').style.display = 'none';
+
+      const icon = (vehicleTypes.indexOf(vehicle.type) === -1 ? 'naked' : vehicle.type) + '.svg';
+      el('icon').style.webkitMaskImage = 'url(' + icon + ')';
+      el('icon').style.maskImage = 'url(' + icon + ')';
+      el('name').textContent = vehicle.name;
+      el('description').textContent = vehicle.description || ' ';
+
+      const status = vehicle.available ? vehicle.status : 'offline';
+      el('status').className = 'status ' + status;
+      el('status').textContent = vehicle.available ? vehicle.statusText : Homey.__('widget.unavailable');
+
+      setValue('tracker-battery', vehicle.trackerBatteryPercent, '%', 0);
+      setValue('vehicle-battery', vehicle.vehicleBatteryVolts, 'V', 1);
+      el('vehicle-battery').classList.toggle('battery-low', typeof vehicle.vehicleBatteryVolts === 'number' && vehicle.vehicleBatteryVolts < 12);
+      setValue('odometer', vehicle.odometerKm, 'km', 0);
+
+      // While riding the speed is more interesting than the distance from home.
+      if (vehicle.status === 'riding' && typeof vehicle.speedKmh === 'number') {
+        el('label-fourth').textContent = Homey.__('widget.speed');
+        setValue('fourth', vehicle.speedKmh, 'km/h', 0);
+      } else {
+        el('label-fourth').textContent = Homey.__('widget.from_home');
+        setValue('fourth', vehicle.distanceFromHomeKm, 'km', 1);
+      }
+
+      if (typeof vehicle.theftAlarmArmed === 'boolean') {
+        el('armed').textContent = (vehicle.theftAlarmArmed ? '🔒 ' : '🔓 ')
+          + Homey.__(vehicle.theftAlarmArmed ? 'widget.armed' : 'widget.disarmed');
+      }
+      lastSeen = vehicle.lastCommunication;
+      renderLastSeen();
+    }
+
+    function renderLastSeen() {
+      el('last-seen').textContent = lastSeen ? Homey.__('widget.last_seen') + ' ' + timeAgo(lastSeen) : ' ';
+    }
+
+    function refresh() {
+      Homey.api('GET', '/?deviceId=' + encodeURIComponent(deviceId), {})
+        .then(vehicle => {
+          if (!vehicle) {
+            showEmpty(Homey.__('widget.no_vehicle'));
+            return;
+          }
+          render(vehicle);
+        })
+        .catch(err => {
+          console.error(err);
+          showEmpty(Homey.__('widget.unavailable'));
+        });
+    }
+
+    refresh();
+    setInterval(refresh, 30000);
+    setInterval(renderLastSeen, 15000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+{
+  "name": {
+    "en": "Motorcycle / scooter",
+    "nl": "Motor / scooter"
+  },
+  "class": "vehicle",
+  "capabilities": [
+    "vehicle_status",
+    "riding",
+    "alarm_theft",
+    "theft_alarm_armed",
+    "measure_battery",
+    "measure_voltage",
+    "meter_odometer",
+    "measure_speed",
+    "distance_from_home",
+    "location_latitude",
+    "location_longitude",
+    "last_communication"
+  ],
+  "capabilitiesOptions": {
+    "measure_battery": {
+      "title": {
+        "en": "Tracker battery",
+        "nl": "Tracker batterij"
+      }
+    },
+    "measure_voltage": {
+      "title": {
+        "en": "Vehicle battery",
+        "nl": "Accu voertuig"
+      },
+      "decimals": 1
+    },
+    "measure_speed": {
+      "title": {
+        "en": "Speed",
+        "nl": "Snelheid"
+      },
+      "units": {
+        "en": "km/h"
+      },
+      "decimals": 0
+    }
+  },
+  "energy": {
+    "batteries": [
+      "INTERNAL"
+    ]
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "login_credentials",
+      "template": "login_credentials",
+      "options": {
+        "title": {
+          "en": "Log in with your Komobi Moto account",
+          "nl": "Log in met je Komobi Moto account"
+        },
+        "usernameLabel": {
+          "en": "E-mail address",
+          "nl": "E-mailadres"
+        },
+        "usernamePlaceholder": {
+          "en": "you@example.com",
+          "nl": "jij@voorbeeld.nl"
+        },
+        "passwordLabel": {
+          "en": "Password",
+          "nl": "Wachtwoord"
+        },
+        "passwordPlaceholder": {
+          "en": "Password",
+          "nl": "Wachtwoord"
+        }
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "repair": [
+    {
+      "id": "login_credentials",
+      "template": "login_credentials",
+      "options": {
+        "title": {
+          "en": "Log in with your Komobi Moto account",
+          "nl": "Log in met je Komobi Moto account"
+        },
+        "usernameLabel": {
+          "en": "E-mail address",
+          "nl": "E-mailadres"
+        },
+        "usernamePlaceholder": {
+          "en": "you@example.com",
+          "nl": "jij@voorbeeld.nl"
+        },
+        "passwordLabel": {
+          "en": "Password",
+          "nl": "Wachtwoord"
+        },
+        "passwordPlaceholder": {
+          "en": "Password",
+          "nl": "Wachtwoord"
+        }
+      }
+    }
+  ]
+}

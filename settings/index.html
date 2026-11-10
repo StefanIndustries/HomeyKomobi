@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+</head>
+<body>
+<h1 class="homey-title" data-i18n="settings.title"></h1>
+
+<fieldset class="homey-form-fieldset">
+    <div class="homey-form-group">
+        <label class="homey-form-label" for="update-interval" data-i18n="settings.interval"></label>
+        <input class="homey-form-input" id="update-interval" type="number" min="30" step="1" value=""/>
+        <p class="homey-form-text" data-i18n="settings.interval_hint"></p>
+    </div>
+</fieldset>
+
+<button id="save" class="homey-button-primary-full" data-i18n="settings.save"></button>
+
+<script type="text/javascript">
+  function onHomeyReady(Homey) {
+    const updateInterval = document.getElementById('update-interval');
+    const saveElement = document.getElementById('save');
+
+    Homey.get('pollingInterval', function(err, interval) {
+      updateInterval.value = err || !interval ? 60 : Math.round(interval / 1000);
+    });
+
+    saveElement.addEventListener('click', function() {
+      const seconds = Math.max(30, parseInt(updateInterval.value, 10) || 60);
+      updateInterval.value = seconds;
+      Homey.set('pollingInterval', seconds * 1000, function(err) {
+        if (err) {
+          return Homey.alert(err);
+        }
+        Homey.alert(Homey.__('settings.saved'));
+      });
+    });
+
+    Homey.ready();
+  }
+</script>
+</body>
+</html>

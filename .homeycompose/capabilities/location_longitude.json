@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": { "en": "Longitude", "nl": "Lengtegraad" },
+  "units": { "en": "°" },
+  "decimals": 6,
+  "min": -180,
+  "max": 180,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_location.svg"
+}

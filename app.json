@@ -1,0 +1,929 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.komobimoto",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "name": {
+    "en": "Komobi Moto"
+  },
+  "description": {
+    "en": "Keep an eye on your motorcycle with your Komobi Moto GPS tracker",
+    "nl": "Houd je motor in de gaten met je Komobi Moto GPS-tracker"
+  },
+  "category": [
+    "internet"
+  ],
+  "tags": {
+    "en": [
+      "komobi",
+      "motorcycle",
+      "scooter",
+      "gps",
+      "tracker",
+      "anti-theft",
+      "bike"
+    ],
+    "nl": [
+      "komobi",
+      "motor",
+      "scooter",
+      "gps",
+      "tracker",
+      "diefstal",
+      "motorfiets"
+    ]
+  },
+  "brandColor": "#00B188",
+  "source": "https://github.com/StefanIndustries/HomeyKomobi",
+  "bugs": {
+    "url": "https://github.com/StefanIndustries/HomeyKomobi/issues"
+  },
+  "support": "https://github.com/StefanIndustries/HomeyKomobi/issues",
+  "permissions": [
+    "homey:manager:geolocation"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Stefan Simon"
+  },
+  "contributing": {
+    "donate": {
+      "bunq": {
+        "username": "StefanJSimon"
+      },
+      "paypal": {
+        "username": "StefanIndustries96"
+      }
+    }
+  },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Arrived home",
+          "nl": "Thuisgekomen"
+        },
+        "titleFormatted": {
+          "en": "Arrived within [[radius]] meters of home",
+          "nl": "Binnen [[radius]] meter van huis gekomen"
+        },
+        "hint": {
+          "en": "Home is the location set for your Homey",
+          "nl": "Thuis is de locatie die voor je Homey is ingesteld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          },
+          {
+            "type": "number",
+            "name": "radius",
+            "min": 25,
+            "max": 100000,
+            "step": 25,
+            "placeholder": {
+              "en": "Radius in meters",
+              "nl": "Straal in meters"
+            },
+            "title": {
+              "en": "Radius (m)",
+              "nl": "Straal (m)"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          }
+        ],
+        "id": "arrived-home"
+      },
+      {
+        "title": {
+          "en": "Left home",
+          "nl": "Van huis vertrokken"
+        },
+        "titleFormatted": {
+          "en": "Went further than [[radius]] meters from home",
+          "nl": "Verder dan [[radius]] meter van huis gegaan"
+        },
+        "hint": {
+          "en": "Home is the location set for your Homey",
+          "nl": "Thuis is de locatie die voor je Homey is ingesteld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          },
+          {
+            "type": "number",
+            "name": "radius",
+            "min": 25,
+            "max": 100000,
+            "step": 25,
+            "placeholder": {
+              "en": "Radius in meters",
+              "nl": "Straal in meters"
+            },
+            "title": {
+              "en": "Radius (m)",
+              "nl": "Straal (m)"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          }
+        ],
+        "id": "left-home"
+      },
+      {
+        "title": {
+          "en": "Location changed",
+          "nl": "Locatie is veranderd"
+        },
+        "hint": {
+          "en": "The vehicle moved more than 50 meters since the last update",
+          "nl": "Het voertuig is meer dan 50 meter verplaatst sinds de vorige update"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "title": {
+              "en": "Speed (km/h)",
+              "nl": "Snelheid (km/u)"
+            },
+            "example": 50
+          },
+          {
+            "type": "number",
+            "name": "distance_from_home",
+            "title": {
+              "en": "Distance from home (km)",
+              "nl": "Afstand tot thuis (km)"
+            },
+            "example": 2.4
+          }
+        ],
+        "id": "location-changed"
+      },
+      {
+        "title": {
+          "en": "Parked",
+          "nl": "Geparkeerd"
+        },
+        "hint": {
+          "en": "The tracker reports the vehicle is parked",
+          "nl": "De tracker meldt dat het voertuig geparkeerd is"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          },
+          {
+            "type": "number",
+            "name": "odometer",
+            "title": {
+              "en": "Odometer (km)",
+              "nl": "Kilometerstand (km)"
+            },
+            "example": 12345
+          }
+        ],
+        "id": "parked"
+      },
+      {
+        "title": {
+          "en": "A ride was recorded",
+          "nl": "Een rit is opgeslagen"
+        },
+        "hint": {
+          "en": "Komobi saved a new ride in the ride history",
+          "nl": "Komobi heeft een nieuwe rit in de rittengeschiedenis opgeslagen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "distance",
+            "title": {
+              "en": "Distance (km)",
+              "nl": "Afstand (km)"
+            },
+            "example": 42.5
+          },
+          {
+            "type": "number",
+            "name": "duration",
+            "title": {
+              "en": "Duration (minutes)",
+              "nl": "Duur (minuten)"
+            },
+            "example": 55
+          },
+          {
+            "type": "number",
+            "name": "average_speed",
+            "title": {
+              "en": "Average speed (km/h)",
+              "nl": "Gemiddelde snelheid (km/u)"
+            },
+            "example": 46
+          },
+          {
+            "type": "number",
+            "name": "max_speed",
+            "title": {
+              "en": "Max speed (km/h)",
+              "nl": "Topsnelheid (km/u)"
+            },
+            "example": 112
+          },
+          {
+            "type": "number",
+            "name": "driving_score",
+            "title": {
+              "en": "Driving score (0-10)",
+              "nl": "Rijscore (0-10)"
+            },
+            "example": 8.4
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "title": {
+              "en": "Ride name",
+              "nl": "Ritnaam"
+            },
+            "example": "Amsterdam - Utrecht"
+          }
+        ],
+        "id": "ride-finished"
+      },
+      {
+        "title": {
+          "en": "Started riding",
+          "nl": "Begon met rijden"
+        },
+        "hint": {
+          "en": "The tracker reports the vehicle is no longer parked",
+          "nl": "De tracker meldt dat het voertuig niet meer geparkeerd staat"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          },
+          {
+            "type": "number",
+            "name": "odometer",
+            "title": {
+              "en": "Odometer (km)",
+              "nl": "Kilometerstand (km)"
+            },
+            "example": 12345
+          }
+        ],
+        "id": "started-riding"
+      },
+      {
+        "title": {
+          "en": "Theft alarm was armed",
+          "nl": "Diefstalalarm werd ingeschakeld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "theft-alarm-armed"
+      },
+      {
+        "title": {
+          "en": "Theft alarm was disarmed",
+          "nl": "Diefstalalarm werd uitgeschakeld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "theft-alarm-disarmed"
+      },
+      {
+        "title": {
+          "en": "Theft alarm went off",
+          "nl": "Diefstalalarm ging af"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          }
+        ],
+        "id": "theft-alarm-fired"
+      },
+      {
+        "title": {
+          "en": "Vehicle battery dropped below a voltage",
+          "nl": "Accuspanning zakte onder een waarde"
+        },
+        "titleFormatted": {
+          "en": "Vehicle battery dropped below [[voltage]] V",
+          "nl": "Accuspanning zakte onder [[voltage]] V"
+        },
+        "hint": {
+          "en": "A healthy 12 V battery sits around 12.6 V when the engine is off",
+          "nl": "Een gezonde 12 V accu zit rond 12,6 V als de motor uit staat"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          },
+          {
+            "type": "number",
+            "name": "voltage",
+            "min": 0,
+            "max": 60,
+            "step": 0.1,
+            "placeholder": {
+              "en": "Voltage",
+              "nl": "Spanning"
+            },
+            "title": {
+              "en": "Voltage",
+              "nl": "Spanning"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "voltage",
+            "title": {
+              "en": "Battery voltage (V)",
+              "nl": "Accuspanning (V)"
+            },
+            "example": 11.8
+          }
+        ],
+        "id": "vehicle-battery-dropped-below"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "!{{Is|Isn't}} near home",
+          "nl": "!{{Is|Is niet}} in de buurt van huis"
+        },
+        "titleFormatted": {
+          "en": "!{{Is|Isn't}} within [[radius]] meters of home",
+          "nl": "!{{Is|Is niet}} binnen [[radius]] meter van huis"
+        },
+        "hint": {
+          "en": "Home is the location set for your Homey",
+          "nl": "Thuis is de locatie die voor je Homey is ingesteld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          },
+          {
+            "type": "number",
+            "name": "radius",
+            "min": 25,
+            "max": 100000,
+            "step": 25,
+            "placeholder": {
+              "en": "Radius in meters",
+              "nl": "Straal in meters"
+            },
+            "title": {
+              "en": "Radius (m)",
+              "nl": "Straal (m)"
+            }
+          }
+        ],
+        "id": "is-near-home"
+      },
+      {
+        "title": {
+          "en": "!{{Is|Isn't}} riding",
+          "nl": "!{{Rijdt|Rijdt niet}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "is-riding"
+      },
+      {
+        "title": {
+          "en": "Theft alarm !{{is|isn't}} going off",
+          "nl": "Diefstalalarm !{{gaat|gaat niet}} af"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "theft-alarm-is-active"
+      },
+      {
+        "title": {
+          "en": "Theft alarm !{{is|isn't}} armed",
+          "nl": "Diefstalalarm !{{is|is niet}} ingeschakeld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "theft-alarm-is-armed"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Refresh status",
+          "nl": "Status verversen"
+        },
+        "hint": {
+          "en": "Fetch the latest status from Komobi right away",
+          "nl": "Haal direct de laatste status op bij Komobi"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle"
+          }
+        ],
+        "id": "refresh-vehicle"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Motorcycle / scooter",
+        "nl": "Motor / scooter"
+      },
+      "class": "vehicle",
+      "capabilities": [
+        "vehicle_status",
+        "riding",
+        "alarm_theft",
+        "theft_alarm_armed",
+        "measure_battery",
+        "measure_voltage",
+        "meter_odometer",
+        "measure_speed",
+        "distance_from_home",
+        "location_latitude",
+        "location_longitude",
+        "last_communication"
+      ],
+      "capabilitiesOptions": {
+        "measure_battery": {
+          "title": {
+            "en": "Tracker battery",
+            "nl": "Tracker batterij"
+          }
+        },
+        "measure_voltage": {
+          "title": {
+            "en": "Vehicle battery",
+            "nl": "Accu voertuig"
+          },
+          "decimals": 1
+        },
+        "measure_speed": {
+          "title": {
+            "en": "Speed",
+            "nl": "Snelheid"
+          },
+          "units": {
+            "en": "km/h"
+          },
+          "decimals": 0
+        }
+      },
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/vehicle/assets/images/small.png",
+        "large": "/drivers/vehicle/assets/images/large.png",
+        "xlarge": "/drivers/vehicle/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "options": {
+            "title": {
+              "en": "Log in with your Komobi Moto account",
+              "nl": "Log in met je Komobi Moto account"
+            },
+            "usernameLabel": {
+              "en": "E-mail address",
+              "nl": "E-mailadres"
+            },
+            "usernamePlaceholder": {
+              "en": "you@example.com",
+              "nl": "jij@voorbeeld.nl"
+            },
+            "passwordLabel": {
+              "en": "Password",
+              "nl": "Wachtwoord"
+            },
+            "passwordPlaceholder": {
+              "en": "Password",
+              "nl": "Wachtwoord"
+            }
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "repair": [
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "options": {
+            "title": {
+              "en": "Log in with your Komobi Moto account",
+              "nl": "Log in met je Komobi Moto account"
+            },
+            "usernameLabel": {
+              "en": "E-mail address",
+              "nl": "E-mailadres"
+            },
+            "usernamePlaceholder": {
+              "en": "you@example.com",
+              "nl": "jij@voorbeeld.nl"
+            },
+            "passwordLabel": {
+              "en": "Password",
+              "nl": "Wachtwoord"
+            },
+            "passwordPlaceholder": {
+              "en": "Password",
+              "nl": "Wachtwoord"
+            }
+          }
+        }
+      ],
+      "id": "vehicle"
+    }
+  ],
+  "widgets": {
+    "vehicle-status": {
+      "name": {
+        "en": "Vehicle status",
+        "nl": "Voertuigstatus"
+      },
+      "settings": [],
+      "devices": {
+        "type": "app",
+        "singular": true
+      },
+      "height": 190,
+      "api": {
+        "getVehicleStatus": {
+          "method": "GET",
+          "path": "/"
+        }
+      },
+      "id": "vehicle-status"
+    }
+  },
+  "capabilities": {
+    "alarm_theft": {
+      "type": "boolean",
+      "title": {
+        "en": "Theft alarm",
+        "nl": "Diefstalalarm"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Theft alarm went off",
+        "nl": "Diefstalalarm ging af"
+      },
+      "insightsTitleFalse": {
+        "en": "Theft alarm stopped",
+        "nl": "Diefstalalarm gestopt"
+      },
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_alarm_theft.svg"
+    },
+    "distance_from_home": {
+      "type": "number",
+      "title": {
+        "en": "Distance from home",
+        "nl": "Afstand tot thuis"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 1,
+      "min": 0,
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_home_distance.svg"
+    },
+    "last_communication": {
+      "type": "string",
+      "title": {
+        "en": "Last seen",
+        "nl": "Laatst gezien"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_last_seen.svg"
+    },
+    "location_latitude": {
+      "type": "number",
+      "title": {
+        "en": "Latitude",
+        "nl": "Breedtegraad"
+      },
+      "units": {
+        "en": "°"
+      },
+      "decimals": 6,
+      "min": -90,
+      "max": 90,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_location.svg"
+    },
+    "location_longitude": {
+      "type": "number",
+      "title": {
+        "en": "Longitude",
+        "nl": "Lengtegraad"
+      },
+      "units": {
+        "en": "°"
+      },
+      "decimals": 6,
+      "min": -180,
+      "max": 180,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_location.svg"
+    },
+    "meter_odometer": {
+      "type": "number",
+      "title": {
+        "en": "Odometer",
+        "nl": "Kilometerstand"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 0,
+      "min": 0,
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_odometer.svg"
+    },
+    "riding": {
+      "type": "boolean",
+      "title": {
+        "en": "Riding",
+        "nl": "Aan het rijden"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Started riding",
+        "nl": "Begonnen met rijden"
+      },
+      "insightsTitleFalse": {
+        "en": "Parked",
+        "nl": "Geparkeerd"
+      },
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_riding.svg"
+    },
+    "theft_alarm_armed": {
+      "type": "boolean",
+      "title": {
+        "en": "Theft alarm armed",
+        "nl": "Diefstalalarm ingeschakeld"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Theft alarm armed",
+        "nl": "Diefstalalarm ingeschakeld"
+      },
+      "insightsTitleFalse": {
+        "en": "Theft alarm disarmed",
+        "nl": "Diefstalalarm uitgeschakeld"
+      },
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_theft_alarm_armed.svg"
+    },
+    "vehicle_status": {
+      "type": "string",
+      "title": {
+        "en": "Status",
+        "nl": "Status"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_vehicle_status.svg"
+    }
+  }
+}

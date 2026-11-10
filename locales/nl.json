@@ -1,0 +1,36 @@
+{
+  "status": {
+    "parked": "Geparkeerd",
+    "riding": "Rijdt",
+    "alarm": "Diefstalalarm!",
+    "unknown": "Onbekend"
+  },
+  "errors": {
+    "not_logged_in": "Niet ingelogd bij Komobi, repareer het apparaat om in te loggen",
+    "login_failed": "Inloggen bij Komobi is mislukt, repareer het apparaat met je huidige wachtwoord",
+    "invalid_credentials": "Verkeerd e-mailadres of wachtwoord",
+    "unreachable": "Komobi is nu niet bereikbaar, later wordt het opnieuw geprobeerd",
+    "vehicle_not_found": "Dit voertuig staat niet meer in je Komobi garage",
+    "no_location": "De locatie van het voertuig of van je Homey is niet bekend",
+    "vehicle_not_in_account": "Dit voertuig staat niet in de garage van dat Komobi account"
+  },
+  "widget": {
+    "no_vehicle": "Kies een voertuig in de widget instellingen",
+    "unavailable": "Niet beschikbaar",
+    "tracker_battery": "Tracker",
+    "vehicle_battery": "Accu",
+    "odometer": "Km-stand",
+    "from_home": "Van huis",
+    "speed": "Snelheid",
+    "armed": "Alarm aan",
+    "disarmed": "Alarm uit",
+    "last_seen": "Laatst gezien"
+  },
+  "settings": {
+    "title": "Komobi Moto instellingen",
+    "interval": "Update interval (seconden)",
+    "interval_hint": "Hoe vaak de status van je voertuigen wordt opgehaald. Minimaal 30 seconden.",
+    "save": "Opslaan",
+    "saved": "Instellingen opgeslagen"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": { "en": "Latitude", "nl": "Breedtegraad" },
+  "units": { "en": "°" },
+  "decimals": 6,
+  "min": -90,
+  "max": 90,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_location.svg"
+}

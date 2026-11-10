@@ -1,0 +1,36 @@
+{
+  "title": {
+    "en": "!{{Is|Isn't}} near home",
+    "nl": "!{{Is|Is niet}} in de buurt van huis"
+  },
+  "titleFormatted": {
+    "en": "!{{Is|Isn't}} within [[radius]] meters of home",
+    "nl": "!{{Is|Is niet}} binnen [[radius]] meter van huis"
+  },
+  "hint": {
+    "en": "Home is the location set for your Homey",
+    "nl": "Thuis is de locatie die voor je Homey is ingesteld"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle"
+    },
+    {
+      "type": "number",
+      "name": "radius",
+      "min": 25,
+      "max": 100000,
+      "step": 25,
+      "placeholder": {
+        "en": "Radius in meters",
+        "nl": "Straal in meters"
+      },
+      "title": {
+        "en": "Radius (m)",
+        "nl": "Straal (m)"
+      }
+    }
+  ]
+}
