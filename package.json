@@ -1,6 +1,6 @@
 {
   "name": "com.komobimoto",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
@@ -11,7 +11,7 @@
     "publish": "homey app publish"
   },
   "dependencies": {
-    "node-komobi": "^0.4.0"
+    "node-komobi": "0.5.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.9",

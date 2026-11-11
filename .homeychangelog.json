@@ -6,5 +6,9 @@
   "1.1.0": {
     "en": "Shows the battery of your Komobi key fob, with flow cards for a low key fob battery and a key fob left behind. The widget now shows the Komobi shield.",
     "nl": "Toont de batterij van je Komobi sleutelhanger, met flowkaarten voor een lege sleutelhanger en een achtergelaten sleutelhanger. De widget toont nu het Komobi schild."
+  },
+  "1.1.1": {
+    "en": "Greatly reduced the size of the app installation.",
+    "nl": "De grootte van de app-installatie aanzienlijk verkleind."
   }
 }
