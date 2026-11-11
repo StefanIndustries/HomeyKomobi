@@ -1,6 +1,6 @@
 {
   "id": "com.komobimoto",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -21,8 +21,24 @@
     "internet"
   ],
   "tags": {
-    "en": ["komobi", "motorcycle", "scooter", "gps", "tracker", "anti-theft", "bike"],
-    "nl": ["komobi", "motor", "scooter", "gps", "tracker", "diefstal", "motorfiets"]
+    "en": [
+      "komobi",
+      "motorcycle",
+      "scooter",
+      "gps",
+      "tracker",
+      "anti-theft",
+      "bike"
+    ],
+    "nl": [
+      "komobi",
+      "motor",
+      "scooter",
+      "gps",
+      "tracker",
+      "diefstal",
+      "motorfiets"
+    ]
   },
   "brandColor": "#00B188",
   "source": "https://github.com/StefanIndustries/HomeyKomobi",

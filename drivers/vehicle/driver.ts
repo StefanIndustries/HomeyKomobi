@@ -2,7 +2,7 @@ import Homey from 'homey';
 import PairSession from 'homey/lib/PairSession';
 import { Komobi, KomobiLoginError, KomobiVehicle } from 'node-komobi';
 import { KomobiVehicleDevice } from './device';
-import { accountKey, crossedRadius, droppedBelow, groupBy, vehicleName, vehicleType } from './vehicle-state';
+import { accountKey, crossedRadius, droppedBelow, groupBy, vehicleName } from './vehicle-state';
 
 const DEFAULT_POLLING_INTERVAL = 60000;
 const MIN_POLLING_INTERVAL = 30000;
@@ -24,6 +24,8 @@ export interface VehicleTriggers {
     arrivedHome: Homey.FlowCardTriggerDevice;
     leftHome: Homey.FlowCardTriggerDevice;
     vehicleBatteryDroppedBelow: Homey.FlowCardTriggerDevice;
+    keyFobBatteryDroppedBelow: Homey.FlowCardTriggerDevice;
+    keyFobForgotten: Homey.FlowCardTriggerDevice;
 }
 
 /** A logged-in Komobi account, shared by every vehicle that was paired with it. */
@@ -213,6 +215,8 @@ export class KomobiVehicleDriver extends Homey.Driver {
             arrivedHome: trigger('arrived-home'),
             leftHome: trigger('left-home'),
             vehicleBatteryDroppedBelow: trigger('vehicle-battery-dropped-below'),
+            keyFobBatteryDroppedBelow: trigger('key-fob-battery-dropped-below'),
+            keyFobForgotten: trigger('key-fob-forgotten'),
         };
 
         type Distances = { previous: number, current: number };
@@ -225,6 +229,9 @@ export class KomobiVehicleDriver extends Homey.Driver {
         this.triggers.vehicleBatteryDroppedBelow.registerRunListener(async (args: { voltage: number }, state: Distances) => {
             return droppedBelow(state.previous, state.current, args.voltage);
         });
+        this.triggers.keyFobBatteryDroppedBelow.registerRunListener(async (args: { battery: number }, state: Distances) => {
+            return droppedBelow(state.previous, state.current, args.battery);
+        });
 
         type DeviceArgs = { device: KomobiVehicleDevice };
         this.homey.flow.getConditionCard('is-riding')
@@ -233,6 +240,8 @@ export class KomobiVehicleDriver extends Homey.Driver {
             .registerRunListener(async (args: DeviceArgs) => args.device.isTheftAlarmArmed());
         this.homey.flow.getConditionCard('theft-alarm-is-active')
             .registerRunListener(async (args: DeviceArgs) => args.device.isTheftAlarmActive());
+        this.homey.flow.getConditionCard('key-fob-is-forgotten')
+            .registerRunListener(async (args: DeviceArgs) => args.device.isKeyFobForgotten());
         this.homey.flow.getConditionCard('is-near-home')
             .registerRunListener(async (args: DeviceArgs & { radius: number }) => args.device.isNearHome(args.radius));
 
@@ -292,7 +301,6 @@ export class KomobiVehicleDriver extends Homey.Driver {
                     email,
                     password,
                     deviceId: vehicle.deviceId,
-                    type: vehicleType(vehicle),
                 },
             }));
         });

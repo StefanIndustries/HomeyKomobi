@@ -3,19 +3,19 @@ import { Komobi, KomobiVehicle } from 'node-komobi';
 import type { KomobiVehicleDriver } from './driver';
 import {
     detectChanges, latestRouteId, newRoutes, rideTokens, statusKey, distanceMeters,
-    VehicleChanges, VehicleSnapshot, vehicleSnapshot, VehicleStatusKey, vehicleType
+    VehicleChanges, VehicleSnapshot, vehicleSnapshot, VehicleStatusKey
 } from './vehicle-state';
 
 /** Status of one vehicle as shown by the vehicle status widget. */
 export interface VehicleWidgetStatus {
     name: string;
     description: string;
-    type: string;
     status: VehicleStatusKey;
     statusText: string;
     theftAlarmArmed?: boolean;
     trackerBatteryPercent?: number;
     vehicleBatteryVolts?: number;
+    keyFobBatteryPercent?: number;
     odometerKm?: number;
     speedKmh?: number;
     distanceFromHomeKm?: number;
@@ -90,6 +90,14 @@ export class KomobiVehicleDevice extends Homey.Device {
         await this.setValue('location_longitude', snapshot.longitude);
         await this.setValue('distance_from_home', this.homeDistance === undefined ? undefined : Number((this.homeDistance / 1000).toFixed(1)));
         await this.setValue('last_communication', this.formatDate(snapshot.lastCommunication));
+
+        // Not every tracker has a key fob, so the capability only appears on vehicles that report one.
+        if (snapshot.keyFobs.length > 0 && !this.hasCapability('measure_keyfob_battery')) {
+            await this.addCapability('measure_keyfob_battery').catch(this.error);
+        } else if (snapshot.keyFobs.length === 0 && this.hasCapability('measure_keyfob_battery')) {
+            await this.removeCapability('measure_keyfob_battery').catch(this.error);
+        }
+        await this.setValue('measure_keyfob_battery', snapshot.keyFobBatteryPercent);
     }
 
     private async setValue(capability: string, value: string | number | boolean | undefined) {
@@ -138,6 +146,12 @@ export class KomobiVehicleDevice extends Homey.Device {
             const state = { previous: previousHomeDistance, current: this.homeDistance };
             run(triggers.arrivedHome, location, state);
             run(triggers.leftHome, location, state);
+        }
+        for (const fob of changes.keyFobBattery) {
+            run(triggers.keyFobBatteryDroppedBelow, { key_fob: fob.id, battery: fob.current }, fob);
+        }
+        for (const id of changes.keyFobsForgotten) {
+            run(triggers.keyFobForgotten, { key_fob: id, ...location });
         }
     }
 
@@ -188,6 +202,7 @@ export class KomobiVehicleDevice extends Homey.Device {
     public isRiding = () => this.snapshot?.riding === true;
     public isTheftAlarmArmed = () => this.snapshot?.theftAlarmArmed === true;
     public isTheftAlarmActive = () => this.snapshot?.theftAlarmFired === true;
+    public isKeyFobForgotten = () => this.snapshot?.keyFobs.some(fob => fob.forgotten) === true;
 
     public isNearHome(radius: number): boolean {
         if (this.homeDistance === undefined) {
@@ -197,18 +212,18 @@ export class KomobiVehicleDevice extends Homey.Device {
     }
 
     public getWidgetStatus(): VehicleWidgetStatus {
-        const snapshot = this.snapshot ?? {};
+        const snapshot: VehicleSnapshot = this.snapshot ?? { keyFobs: [] };
         const key = statusKey(snapshot);
         const vehicle = this.vehicle;
         return {
             name: this.getName(),
             description: [vehicle?.model, vehicle?.registrationNumber].filter(Boolean).join(' · '),
-            type: vehicle ? vehicleType(vehicle) : this.getStoreValue('type') ?? 'naked',
             status: key,
             statusText: this.getCapabilityValue('vehicle_status') ?? this.homey.__(`status.${key}`),
             theftAlarmArmed: snapshot.theftAlarmArmed,
             trackerBatteryPercent: snapshot.trackerBatteryPercent,
             vehicleBatteryVolts: snapshot.vehicleBatteryVolts,
+            keyFobBatteryPercent: snapshot.keyFobBatteryPercent,
             odometerKm: snapshot.odometerKm,
             speedKmh: snapshot.speedKmh,
             distanceFromHomeKm: this.homeDistance === undefined ? undefined : Number((this.homeDistance / 1000).toFixed(1)),

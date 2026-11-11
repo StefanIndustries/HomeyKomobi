@@ -19,6 +19,19 @@ export interface VehicleSnapshot {
     latitude?: number;
     longitude?: number;
     lastCommunication?: Date;
+    /** Bluetooth key fobs of the tracker. */
+    keyFobs: KeyFob[];
+    /** Lowest battery charge of the enabled key fobs, in percent. */
+    keyFobBatteryPercent?: number;
+}
+
+export interface KeyFob {
+    /** Bluetooth id, as the Komobi app shows it. */
+    id: string;
+    batteryPercent?: number;
+    enabled: boolean;
+    /** True while Komobi warns the key fob was left behind. */
+    forgotten: boolean;
 }
 
 /** What changed between two snapshots, used to fire the flow triggers. */
@@ -32,6 +45,10 @@ export interface VehicleChanges {
     movedMeters?: number;
     /** Previous and current vehicle battery voltage, when it changed. */
     voltage?: { previous: number, current: number };
+    /** Key fobs whose battery charge changed. */
+    keyFobBattery: { id: string, previous: number, current: number }[];
+    /** Key fobs Komobi started warning about being left behind. */
+    keyFobsForgotten: string[];
 }
 
 /** Moves smaller than this are GPS drift, not a location change. */
@@ -53,9 +70,20 @@ const theftAlarm = (vehicle: KomobiVehicle) => {
     };
 };
 
+export function keyFobs(vehicle: KomobiVehicle): KeyFob[] {
+    return (vehicle.device?.keychains ?? []).map(keychain => ({
+        id: keychain.bleId,
+        batteryPercent: keychain.batteryPercent,
+        enabled: keychain.enabled !== false,
+        forgotten: keychain.forgottenWarning === true,
+    }));
+}
+
 export function vehicleSnapshot(vehicle: KomobiVehicle): VehicleSnapshot {
     const device = vehicle.device;
     const alarm = theftAlarm(vehicle);
+    const fobs = keyFobs(vehicle);
+    const fobBatteries = fobs.filter(fob => fob.enabled && fob.batteryPercent !== undefined).map(fob => fob.batteryPercent!);
     const mode = device?.operationMode?.toUpperCase();
     const riding = device ? (mode ? mode !== 'PARKED' && !device.parked : !device.parked) : undefined;
     return {
@@ -72,6 +100,8 @@ export function vehicleSnapshot(vehicle: KomobiVehicle): VehicleSnapshot {
         latitude: device?.lastLocation?.latitude,
         longitude: device?.lastLocation?.longitude,
         lastCommunication: device?.lastCommunication ?? vehicle.lastActivity,
+        keyFobs: fobs,
+        keyFobBatteryPercent: fobBatteries.length > 0 ? Math.min(...fobBatteries) : undefined,
     };
 }
 
@@ -98,6 +128,7 @@ export function distanceMeters(lat1: number, lon1: number, lat2: number, lon2: n
 export function detectChanges(previous: VehicleSnapshot | undefined, next: VehicleSnapshot): VehicleChanges {
     const changes: VehicleChanges = {
         startedRiding: false, parked: false, theftAlarmFired: false, theftAlarmArmed: false, theftAlarmDisarmed: false,
+        keyFobBattery: [], keyFobsForgotten: [],
     };
     if (!previous) {
         return changes;
@@ -120,6 +151,18 @@ export function detectChanges(previous: VehicleSnapshot | undefined, next: Vehic
     }
     if (previous.vehicleBatteryVolts !== undefined && next.vehicleBatteryVolts !== undefined && previous.vehicleBatteryVolts !== next.vehicleBatteryVolts) {
         changes.voltage = { previous: previous.vehicleBatteryVolts, current: next.vehicleBatteryVolts };
+    }
+    for (const fob of next.keyFobs) {
+        const before = previous.keyFobs.find(old => old.id === fob.id);
+        if (!before) {
+            continue;
+        }
+        if (before.batteryPercent !== undefined && fob.batteryPercent !== undefined && before.batteryPercent !== fob.batteryPercent) {
+            changes.keyFobBattery.push({ id: fob.id, previous: before.batteryPercent, current: fob.batteryPercent });
+        }
+        if (fob.forgotten && !before.forgotten) {
+            changes.keyFobsForgotten.push(fob.id);
+        }
     }
     return changes;
 }
@@ -174,16 +217,6 @@ export function groupBy<T, K>(items: T[], key: (item: T) => K): Map<K, T[]> {
         groups.set(k, [...(groups.get(k) ?? []), item]);
     }
     return groups;
-}
-
-/** Komobi vehicle type codes that have their own icon in the widget. */
-const vehicleTypeIcons: Record<string, string> = {
-    CH: 'chopper', CR: 'cross', GT: 'touring', RA: 'racing', SC: 'scooter', NK: 'naked', TR: 'trail',
-};
-
-export function vehicleType(vehicle: KomobiVehicle): string {
-    const code = obj(vehicle.raw).type;
-    return typeof code === 'string' && vehicleTypeIcons[code.toUpperCase()] ? vehicleTypeIcons[code.toUpperCase()] : 'naked';
 }
 
 export function vehicleName(vehicle: KomobiVehicle): string {

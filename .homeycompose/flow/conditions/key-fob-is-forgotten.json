@@ -1,0 +1,13 @@
+{
+  "title": {
+    "en": "A key fob !{{is|isn't}} left behind",
+    "nl": "Een sleutelhanger !{{is|is niet}} achtergelaten"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+    }
+  ]
+}

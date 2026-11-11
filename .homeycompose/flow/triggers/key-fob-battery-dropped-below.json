@@ -1,0 +1,44 @@
+{
+  "title": {
+    "en": "Key fob battery dropped below a percentage",
+    "nl": "Batterij sleutelhanger zakte onder een percentage"
+  },
+  "titleFormatted": {
+    "en": "Key fob battery dropped below [[battery]]%",
+    "nl": "Batterij sleutelhanger zakte onder [[battery]]%"
+  },
+  "hint": {
+    "en": "Runs for every key fob of the vehicle on its own",
+    "nl": "Werkt voor elke sleutelhanger van het voertuig afzonderlijk"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+    },
+    {
+      "type": "number",
+      "name": "battery",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "placeholder": { "en": "Percentage", "nl": "Percentage" },
+      "title": { "en": "Battery (%)", "nl": "Batterij (%)" }
+    }
+  ],
+  "tokens": [
+    {
+      "type": "string",
+      "name": "key_fob",
+      "title": { "en": "Key fob id", "nl": "Id sleutelhanger" },
+      "example": "CFFBCA9CF8A8"
+    },
+    {
+      "type": "number",
+      "name": "battery",
+      "title": { "en": "Battery (%)", "nl": "Batterij (%)" },
+      "example": 15
+    }
+  ]
+}

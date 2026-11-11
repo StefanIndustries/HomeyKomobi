@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const {
     vehicleSnapshot, statusKey, detectChanges, distanceMeters, droppedBelow, crossedRadius, newRoutes, latestRouteId,
-    rideTokens, vehicleType, vehicleName, accountKey, groupBy
+    rideTokens, vehicleName, accountKey, groupBy
 } = require('../.homeybuild/drivers/vehicle/vehicle-state');
 
 test('vehicles are grouped per Komobi account, ignoring e-mail capitals', () => {
@@ -13,12 +13,19 @@ test('vehicles are grouped per Komobi account, ignoring e-mail capitals', () => 
     assert.deepEqual(groups.get('a@x.nl').map(d => d.id), [1, 3]);
 });
 
+/** A key fob as node-komobi maps it. */
+const fob = (battery = 100, forgotten = false, bleId = 'CFFBCA9CF8A8', enabled = true) => ({
+    bleId, name: 'rKtmYpwV', batteryPercent: battery, lastCommunication: new Date(1794240955000), enabled,
+    forgottenNotificationActive: true, forgottenWarning: forgotten, raw: {},
+});
+
 /** A vehicle as node-komobi maps it, with the raw alarm part shaped like the live API. */
-const vehicle = ({ mode = 'PARKED', parked = true, armed = true, fired = false, alarmId = 10, lat = 51.948567, lon = 5.910607, volts = 13.1, type = 'CH', name = null } = {}) => ({
+
+const vehicle = ({ mode = 'PARKED', parked = true, armed = true, fired = false, alarmId = 10, lat = 51.948567, lon = 5.910607, volts = 13.1, type = 'CH', name = null, keychains = [fob()] } = {}) => ({
     vehicleId: '3a1990b0', brand: 'KAWASAKI', model: 'Z 650 RS', registrationNumber: '00-XXX-0', currentKm: 821, batteryVolts: 13.7,
     device: {
         operationMode: mode, parked, active: true, internalBatteryPercent: 80, externalBatteryVolts: volts,
-        lastLocation: { latitude: lat, longitude: lon, speedKmh: 0 }, lastCommunication: new Date(1794313986000),
+        lastLocation: { latitude: lat, longitude: lon, speedKmh: 0 }, lastCommunication: new Date(1794313986000), keychains,
     },
     raw: { type, name, device: { alarms: { config: { enabled: armed }, status: { isFired: fired, lastAlarm: { id: alarmId } } } } },
 });
@@ -44,7 +51,32 @@ test('riding and alarm status', () => {
 
 test('nothing changes on the first snapshot', () => {
     const changes = detectChanges(undefined, vehicleSnapshot(vehicle({ fired: true })));
-    assert.deepEqual(changes, { startedRiding: false, parked: false, theftAlarmFired: false, theftAlarmArmed: false, theftAlarmDisarmed: false });
+    assert.deepEqual(changes, {
+        startedRiding: false, parked: false, theftAlarmFired: false, theftAlarmArmed: false, theftAlarmDisarmed: false,
+        keyFobBattery: [], keyFobsForgotten: [],
+    });
+});
+
+test('the lowest battery of the enabled key fobs counts', () => {
+    const one = vehicleSnapshot(vehicle());
+    assert.deepEqual(one.keyFobs, [{ id: 'CFFBCA9CF8A8', batteryPercent: 100, enabled: true, forgotten: false }]);
+    assert.equal(one.keyFobBatteryPercent, 100);
+    const two = vehicleSnapshot(vehicle({ keychains: [fob(100), fob(35, false, 'AABBCC'), fob(5, false, 'OFF', false)] }));
+    assert.equal(two.keyFobBatteryPercent, 35);
+    const none = vehicleSnapshot(vehicle({ keychains: [] }));
+    assert.deepEqual(none.keyFobs, []);
+    assert.equal(none.keyFobBatteryPercent, undefined);
+});
+
+test('detects key fob battery changes and a fob left behind', () => {
+    const before = vehicleSnapshot(vehicle({ keychains: [fob(100), fob(40, false, 'AABBCC')] }));
+    const after = vehicleSnapshot(vehicle({ keychains: [fob(100, true), fob(18, false, 'AABBCC')] }));
+    const changes = detectChanges(before, after);
+    assert.deepEqual(changes.keyFobBattery, [{ id: 'AABBCC', previous: 40, current: 18 }]);
+    assert.deepEqual(changes.keyFobsForgotten, ['CFFBCA9CF8A8']);
+    assert.ok(droppedBelow(40, 18, 20));
+    // A fob that only just appeared has nothing to compare with.
+    assert.deepEqual(detectChanges(vehicleSnapshot(vehicle({ keychains: [] })), after).keyFobBattery, []);
 });
 
 test('detects riding, parking, alarms, moves and voltage', () => {
@@ -91,10 +123,7 @@ test('new rides come oldest first and only after the first check', () => {
         { distance: 42.5, duration: 55, average_speed: 46, max_speed: 113, driving_score: 8.4, name: '' });
 });
 
-test('vehicle type icons and names', () => {
-    assert.equal(vehicleType(vehicle()), 'chopper');
-    assert.equal(vehicleType(vehicle({ type: 'SC' })), 'scooter');
-    assert.equal(vehicleType(vehicle({ type: 'XX' })), 'naked');
+test('vehicle names', () => {
     assert.equal(vehicleName(vehicle()), 'Kawasaki Z 650 RS');
     assert.equal(vehicleName(vehicle({ name: ' My bike ' })), 'My bike');
 });

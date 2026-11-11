@@ -13,14 +13,15 @@
             gap: 10px;
         }
 
-        .vehicle-icon {
+        .shield {
             flex: none;
             width: 44px;
             height: 44px;
-            background-color: var(--homey-text-color, #222);
-            -webkit-mask: url(naked.svg) center / contain no-repeat;
-            mask: url(naked.svg) center / contain no-repeat;
         }
+
+        /* The outline follows the theme so it stays visible on a dark dashboard; the wings keep the Komobi green. */
+        .shield .outline { stroke: var(--homey-text-color, #131313); }
+        .shield .wing { fill: #00B188; }
 
         .title {
             flex: 1;
@@ -108,7 +109,11 @@
 
 <div class="vehicle" id="vehicle">
     <div class="header">
-        <div class="vehicle-icon" id="icon"></div>
+        <svg class="shield" viewBox="20 -20 680 680" aria-hidden="true">
+            <path class="outline" d="M 288 94 Q 368 68 460 88 L 632 128 L 617 398 L 422 564 L 224 394 L 213 326" fill="none" stroke-width="42" stroke-linejoin="round"/>
+            <path class="wing" d="M 55 50 C 150 78 270 98 335 132 C 405 170 448 245 456 322 C 425 245 365 205 265 188 C 165 172 78 150 55 50 Z"/>
+            <path class="wing" d="M 100 178 C 185 202 288 205 348 236 C 410 268 444 325 456 386 C 420 330 368 302 288 296 C 198 290 118 262 100 178 Z"/>
+        </svg>
         <div class="title">
             <p class="homey-text-bold" id="name">...</p>
             <p class="homey-text-small-light" id="description">&nbsp;</p>
@@ -137,6 +142,7 @@
 
     <div class="footer">
         <span class="homey-text-small" id="armed">&nbsp;</span>
+        <span class="homey-text-small" id="key-fob"></span>
         <span class="homey-text-small-light" id="last-seen">&nbsp;</span>
     </div>
 </div>
@@ -145,7 +151,6 @@
 
 <script type="text/javascript">
   const el = id => document.getElementById(id);
-  const vehicleTypes = ['chopper', 'cross', 'touring', 'racing', 'scooter', 'naked', 'trail'];
 
   function setValue(id, value, unit, decimals) {
     const text = typeof value === 'number' ? value.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals }) : '-';
@@ -189,9 +194,6 @@
       el('vehicle').style.display = 'flex';
       el('empty').style.display = 'none';
 
-      const icon = (vehicleTypes.indexOf(vehicle.type) === -1 ? 'naked' : vehicle.type) + '.svg';
-      el('icon').style.webkitMaskImage = 'url(' + icon + ')';
-      el('icon').style.maskImage = 'url(' + icon + ')';
       el('name').textContent = vehicle.name;
       el('description').textContent = vehicle.description || ' ';
 
@@ -217,6 +219,9 @@
         el('armed').textContent = (vehicle.theftAlarmArmed ? '🔒 ' : '🔓 ')
           + Homey.__(vehicle.theftAlarmArmed ? 'widget.armed' : 'widget.disarmed');
       }
+      // Only trackers with a key fob report its battery.
+      el('key-fob').textContent = typeof vehicle.keyFobBatteryPercent === 'number' ? '🔑 ' + vehicle.keyFobBatteryPercent + '%' : '';
+      el('key-fob').classList.toggle('battery-low', typeof vehicle.keyFobBatteryPercent === 'number' && vehicle.keyFobBatteryPercent <= 20);
       lastSeen = vehicle.lastCommunication;
       renderLastSeen();
     }

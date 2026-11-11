@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.komobimoto",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -126,6 +126,110 @@
           }
         ],
         "id": "arrived-home"
+      },
+      {
+        "title": {
+          "en": "Key fob battery dropped below a percentage",
+          "nl": "Batterij sleutelhanger zakte onder een percentage"
+        },
+        "titleFormatted": {
+          "en": "Key fob battery dropped below [[battery]]%",
+          "nl": "Batterij sleutelhanger zakte onder [[battery]]%"
+        },
+        "hint": {
+          "en": "Runs for every key fob of the vehicle on its own",
+          "nl": "Werkt voor elke sleutelhanger van het voertuig afzonderlijk"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+          },
+          {
+            "type": "number",
+            "name": "battery",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "placeholder": {
+              "en": "Percentage",
+              "nl": "Percentage"
+            },
+            "title": {
+              "en": "Battery (%)",
+              "nl": "Batterij (%)"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "type": "string",
+            "name": "key_fob",
+            "title": {
+              "en": "Key fob id",
+              "nl": "Id sleutelhanger"
+            },
+            "example": "CFFBCA9CF8A8"
+          },
+          {
+            "type": "number",
+            "name": "battery",
+            "title": {
+              "en": "Battery (%)",
+              "nl": "Batterij (%)"
+            },
+            "example": 15
+          }
+        ],
+        "id": "key-fob-battery-dropped-below"
+      },
+      {
+        "title": {
+          "en": "Key fob was left behind",
+          "nl": "Sleutelhanger is achtergelaten"
+        },
+        "hint": {
+          "en": "Komobi warns that the vehicle left without this key fob nearby. Only works when the forgotten key warning is on in the Komobi app.",
+          "nl": "Komobi waarschuwt dat het voertuig vertrok zonder deze sleutelhanger in de buurt. Werkt alleen als de waarschuwing voor een vergeten sleutel aan staat in de Komobi app."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "string",
+            "name": "key_fob",
+            "title": {
+              "en": "Key fob id",
+              "nl": "Id sleutelhanger"
+            },
+            "example": "CFFBCA9CF8A8"
+          },
+          {
+            "type": "number",
+            "name": "latitude",
+            "title": {
+              "en": "Latitude",
+              "nl": "Breedtegraad"
+            },
+            "example": 52.37
+          },
+          {
+            "type": "number",
+            "name": "longitude",
+            "title": {
+              "en": "Longitude",
+              "nl": "Lengtegraad"
+            },
+            "example": 4.89
+          }
+        ],
+        "id": "key-fob-forgotten"
       },
       {
         "title": {
@@ -573,6 +677,20 @@
       },
       {
         "title": {
+          "en": "A key fob !{{is|isn't}} left behind",
+          "nl": "Een sleutelhanger !{{is|is niet}} achtergelaten"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+          }
+        ],
+        "id": "key-fob-is-forgotten"
+      },
+      {
+        "title": {
           "en": "Theft alarm !{{is|isn't}} going off",
           "nl": "Diefstalalarm !{{gaat|gaat niet}} af"
         },
@@ -856,6 +974,24 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "./assets/cap_location.svg"
+    },
+    "measure_keyfob_battery": {
+      "type": "number",
+      "title": {
+        "en": "Key fob battery",
+        "nl": "Batterij sleutelhanger"
+      },
+      "units": {
+        "en": "%"
+      },
+      "decimals": 0,
+      "min": 0,
+      "max": 100,
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor",
+      "icon": "./assets/cap_key_fob.svg"
     },
     "meter_odometer": {
       "type": "number",

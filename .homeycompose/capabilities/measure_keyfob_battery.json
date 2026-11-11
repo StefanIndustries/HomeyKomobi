@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": { "en": "Key fob battery", "nl": "Batterij sleutelhanger" },
+  "units": { "en": "%" },
+  "decimals": 0,
+  "min": 0,
+  "max": 100,
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "uiComponent": "sensor",
+  "icon": "./assets/cap_key_fob.svg"
+}

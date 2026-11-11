@@ -2,5 +2,9 @@
   "1.0.0": {
     "en": "First version: add the vehicles in your Komobi garage, with flow cards and a vehicle status widget.",
     "nl": "Eerste versie: voeg de voertuigen uit je Komobi garage toe, met flowkaarten en een voertuigstatus widget."
+  },
+  "1.1.0": {
+    "en": "Shows the battery of your Komobi key fob, with flow cards for a low key fob battery and a key fob left behind. The widget now shows the Komobi shield.",
+    "nl": "Toont de batterij van je Komobi sleutelhanger, met flowkaarten voor een lege sleutelhanger en een achtergelaten sleutelhanger. De widget toont nu het Komobi schild."
   }
 }

@@ -1,0 +1,37 @@
+{
+  "title": {
+    "en": "Key fob was left behind",
+    "nl": "Sleutelhanger is achtergelaten"
+  },
+  "hint": {
+    "en": "Komobi warns that the vehicle left without this key fob nearby. Only works when the forgotten key warning is on in the Komobi app.",
+    "nl": "Komobi waarschuwt dat het voertuig vertrok zonder deze sleutelhanger in de buurt. Werkt alleen als de waarschuwing voor een vergeten sleutel aan staat in de Komobi app."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=vehicle&capabilities=measure_keyfob_battery"
+    }
+  ],
+  "tokens": [
+    {
+      "type": "string",
+      "name": "key_fob",
+      "title": { "en": "Key fob id", "nl": "Id sleutelhanger" },
+      "example": "CFFBCA9CF8A8"
+    },
+    {
+      "type": "number",
+      "name": "latitude",
+      "title": { "en": "Latitude", "nl": "Breedtegraad" },
+      "example": 52.37
+    },
+    {
+      "type": "number",
+      "name": "longitude",
+      "title": { "en": "Longitude", "nl": "Lengtegraad" },
+      "example": 4.89
+    }
+  ]
+}
