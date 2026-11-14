@@ -38,12 +38,18 @@ export class KomobiVehicleDevice extends Homey.Device {
                 await this.addCapability(capability).catch(this.error);
             }
         }
+        this.komobiDriver.migrateStoredPassword(this);
         this.log(`vehicle ${this.getName()} has been initialized`);
     }
 
     async onAdded() {
         // Fill in the values right away instead of waiting for the next poll.
         this.komobiDriver.updateDevices().catch(this.error);
+    }
+
+    async onDeleted() {
+        // The account's password goes with its last vehicle.
+        this.komobiDriver.forgetAccountIfUnused(this.getStoreValue('email'), this);
     }
 
     private get komobiDriver(): KomobiVehicleDriver {

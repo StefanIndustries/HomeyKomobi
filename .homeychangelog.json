@@ -10,5 +10,9 @@
   "1.1.1": {
     "en": "Greatly reduced the size of the app installation.",
     "nl": "De grootte van de app-installatie aanzienlijk verkleind."
+  },
+  "1.2.0": {
+    "en": "New App Store images and a motorcycle icon for vehicles. Your Komobi password is now stored once per account instead of with every vehicle.",
+    "nl": "Nieuwe afbeeldingen in de App Store en een motoricoon voor voertuigen. Je Komobi wachtwoord wordt nu één keer per account opgeslagen in plaats van bij elk voertuig."
   }
 }

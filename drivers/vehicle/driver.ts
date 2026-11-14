@@ -28,6 +28,14 @@ export interface VehicleTriggers {
     keyFobForgotten: Homey.FlowCardTriggerDevice;
 }
 
+/** App setting that holds the credentials of every Komobi account, once per account. */
+const ACCOUNTS_SETTING = 'accounts';
+
+interface StoredCredentials {
+    email: string;
+    password: string;
+}
+
 /** A logged-in Komobi account, shared by every vehicle that was paired with it. */
 interface KomobiAccount {
     client: Komobi;
@@ -48,6 +56,7 @@ export class KomobiVehicleDriver extends Homey.Driver {
 
     async onInit() {
         this.registerFlowCards();
+        this.forgetUnusedAccounts();
         this.homey.settings.on('set', (key: string) => {
             if (key === 'pollingInterval') {
                 this.schedulePoll();
@@ -71,14 +80,72 @@ export class KomobiVehicleDriver extends Homey.Driver {
         return new Komobi({ email, password, timeZone: this.homey.clock.getTimezone() });
     }
 
-    /** The client for the account a device was paired with, created on first use and replaced when the password changed. */
-    private getAccount(device: KomobiVehicleDevice): KomobiAccount | undefined {
+    /*
+     * Credentials are kept once per Komobi account, in the app settings under `accounts`, keyed by the lowercase
+     * e-mail address. A vehicle device only stores the e-mail address of the account it was paired with.
+     */
+
+    private getCredentials(): Record<string, StoredCredentials> {
+        const accounts = this.homey.settings.get(ACCOUNTS_SETTING);
+        return accounts && typeof accounts === 'object' ? accounts : {};
+    }
+
+    private saveCredentials(email: string, password: string) {
+        this.homey.settings.set(ACCOUNTS_SETTING, { ...this.getCredentials(), [accountKey(email)]: { email, password } });
+    }
+
+    /** Removes the credentials of an account no vehicle uses any more (besides `leaving`, the device being removed). */
+    public forgetAccountIfUnused(email: unknown, leaving?: KomobiVehicleDevice) {
+        if (typeof email !== 'string' || !email) {
+            return;
+        }
+        const key = accountKey(email);
+        const inUse = this.getDevices().some(device => device !== leaving && accountKey(String(device.getStoreValue('email') ?? '')) === key);
+        if (inUse) {
+            return;
+        }
+        const { [key]: _removed, ...rest } = this.getCredentials();
+        this.homey.settings.set(ACCOUNTS_SETTING, rest);
+        this.accounts.get(key)?.client.dispose();
+        this.accounts.delete(key);
+    }
+
+    /** Drops credentials no vehicle uses, for example from a pairing session that was closed before adding a vehicle. */
+    private forgetUnusedAccounts() {
+        const used = new Set(this.getDevices().map(device => accountKey(String(device.getStoreValue('email') ?? ''))));
+        const credentials = this.getCredentials();
+        const kept = Object.fromEntries(Object.entries(credentials).filter(([key]) => used.has(key)));
+        if (Object.keys(kept).length !== Object.keys(credentials).length) {
+            this.homey.settings.set(ACCOUNTS_SETTING, kept);
+        }
+    }
+
+    /** Moves a password that versions before 1.2.0 kept in the device store into the per-account credentials. */
+    public migrateStoredPassword(device: KomobiVehicleDevice) {
         const email = device.getStoreValue('email');
         const password = device.getStoreValue('password');
-        if (typeof email !== 'string' || !email || typeof password !== 'string' || !password) {
+        if (typeof password !== 'string') {
+            return;
+        }
+        if (typeof email === 'string' && email && !this.getCredentials()[accountKey(email)]) {
+            this.saveCredentials(email, password);
+        }
+        device.unsetStoreValue('password').catch(this.error);
+    }
+
+    /** The client for the account a device was paired with, created on first use and replaced when the password changed. */
+    private getAccount(device: KomobiVehicleDevice): KomobiAccount | undefined {
+        // The first poll can run before the device's own onInit, so migrate here too.
+        this.migrateStoredPassword(device);
+        const email = device.getStoreValue('email');
+        if (typeof email !== 'string' || !email) {
             return undefined;
         }
         const key = accountKey(email);
+        const password = this.getCredentials()[key]?.password;
+        if (!password) {
+            return undefined;
+        }
         const existing = this.accounts.get(key);
         if (existing && existing.password === password) {
             return existing;
@@ -268,8 +335,12 @@ export class KomobiVehicleDriver extends Homey.Driver {
         }
     }
 
-    /** Keeps a client that just logged in, so the first poll of new or repaired devices does not log in again. */
-    private keepClient(email: string, password: string, client: Komobi) {
+    /**
+     * Saves working credentials for the account and keeps the client that just logged in, so the first poll of
+     * new or repaired devices does not log in again.
+     */
+    private useAccount(email: string, password: string, client: Komobi) {
+        this.saveCredentials(email, password);
         const key = accountKey(email);
         this.accounts.get(key)?.client.dispose();
         this.accounts.set(key, { client, password, retryAfter: 0 });
@@ -277,13 +348,13 @@ export class KomobiVehicleDriver extends Homey.Driver {
 
     async onPair(session: PairSession) {
         // Every pair session logs in, so each Homey user adds the vehicles of their own Komobi account.
-        let account: { email: string, password: string, vehicles: KomobiVehicle[] } | undefined;
+        let account: { email: string, vehicles: KomobiVehicle[] } | undefined;
 
         session.setHandler('login', async (data: { username: string, password: string }) => {
             const email = data.username.trim();
             const result = await this.tryLogin(email, data.password);
-            this.keepClient(email, data.password, result.client);
-            account = { email, password: data.password, vehicles: result.vehicles };
+            this.useAccount(email, data.password, result.client);
+            account = { email, vehicles: result.vehicles };
             return true;
         });
 
@@ -291,15 +362,15 @@ export class KomobiVehicleDriver extends Homey.Driver {
             if (!account) {
                 return [];
             }
-            const { email, password, vehicles } = account;
+            const { email, vehicles } = account;
             return vehicles.map(vehicle => ({
                 name: vehicleName(vehicle),
                 data: {
                     id: vehicle.vehicleId,
                 },
+                // Only which account the vehicle belongs to; the password is kept once per account.
                 store: {
                     email,
-                    password,
                     deviceId: vehicle.deviceId,
                 },
             }));
@@ -315,18 +386,21 @@ export class KomobiVehicleDriver extends Homey.Driver {
                 result.client.dispose();
                 throw new Error(this.homey.__('errors.vehicle_not_in_account'));
             }
-            this.keepClient(email, data.password, result.client);
+            this.useAccount(email, data.password, result.client);
 
-            // The other vehicles of the same account get the new credentials too, as long as the account still has them.
+            // A repair with another e-mail address moves this vehicle, and the other vehicles of the old account that
+            // the new account also has, to the new account. The same address only needed the new password saved above.
             const oldEmail = device.getStoreValue('email');
             const oldKey = typeof oldEmail === 'string' ? accountKey(oldEmail) : undefined;
-            const devices = (<KomobiVehicleDevice[]> this.getDevices()).filter(other => other === device || (
-                oldKey !== undefined && accountKey(String(other.getStoreValue('email') ?? '')) === oldKey
-                && result.vehicles.some(vehicle => vehicle.vehicleId === other.vehicleId)
-            ));
-            for (const other of devices) {
-                await other.setStoreValue('email', email);
-                await other.setStoreValue('password', data.password);
+            if (oldKey !== accountKey(email)) {
+                const devices = (<KomobiVehicleDevice[]> this.getDevices()).filter(other => other === device || (
+                    oldKey !== undefined && accountKey(String(other.getStoreValue('email') ?? '')) === oldKey
+                    && result.vehicles.some(vehicle => vehicle.vehicleId === other.vehicleId)
+                ));
+                for (const other of devices) {
+                    await other.setStoreValue('email', email);
+                }
+                this.forgetAccountIfUnused(oldEmail);
             }
             this.updateDevices(true).catch(err => this.error('update after repair failed', err));
             return true;

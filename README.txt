@@ -1,4 +1,4 @@
-Keep an eye on your motorcycle or scooter with your Komobi Moto GPS tracker.
+Bring your motorcycle or scooter into your smart home. See at a glance whether it is parked or on the road, and let your home respond when you ride off, park, come home or when the theft alarm goes off.
 
 Log in with your Komobi Moto account and add every vehicle in your garage as its own device. Everyone in your home can add the vehicles of their own Komobi account: you log in each time you add vehicles. Each vehicle shows whether it is parked or riding, the theft alarm, the battery of the tracker, the vehicle and the key fob, the odometer, its location and how far it is from home.
 
